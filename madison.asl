@@ -1,8 +1,9 @@
 /*  MADiSON Autosplitter
-    v0.0.1 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.3 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     CHANGELOG:
-    - Added items & item checking by name
+    - Added more items
+    - Fix item pointers
 */
 
 
@@ -10,7 +11,8 @@ state("MADiSON", "v1.1.0") { }
 
 startup {
     settings.Add("splitgroup", true, "SPLIT SETTINGS");
-    settings.Add("autoskip", false, "AUTO-SKIP TO END ON MAINMENU", "splitgroup");
+    settings.Add("reset", false, "REALLY Enable time reset on mainmenu (sets it to 0:00)", "splitgroup");
+    settings.SetToolTip("reset", "Same as normal reset, but i wanted a default off option.");
 
     settings.Add("keygroup", true, "Keys");
     settings.Add("maskKey", false, "\"MASK\" KEY", "keygroup");
@@ -18,21 +20,23 @@ startup {
     settings.Add("heartKey", false, "\"HEART\" KEY", "keygroup");
     settings.Add("confessionaryKey", false, "\"CONFESSIONARY\" KEY", "keygroup");
     settings.Add("jKey", false, "\"J\" KEY", "keygroup");
-    settings.Add("clockKey", false, "\"CLOCK\" KEY", "keygroup");
+    settings.Add("clockKey", false, "\"CLOCKROOM\" KEY", "keygroup");
     settings.Add("studyKey", false, "\"STUDY\" KEY", "keygroup");
     // settings.Add("triangularKey", false, 'TRIANGULAR KEY', "keygroup"); // TODO
 
     // -----------------------
     settings.Add("clockgroup", true, "Clocks");
     settings.Add("unfinishedClock", false, "UNFINISHED CLOCK", "clockgroup");
+    settings.Add("clock_1", false, "TWELVE O´CLOCK - FIRST", "clockgroup"); // TODO
+    settings.SetToolTip("clock_1", "Only the first clock will trigger the split");
 
     // -----------------------
     settings.Add("portraitgroup", true, "Portraits");
-    settings.Add("ovalPortrait", false, "GRANDPA PORTRAIT", "portraitgroup");
-    settings.Add("circlePortrait", false, "CIRCLE PORTRAIT", "portraitgroup");
-    settings.Add("hexaPortrait", false, "HEXAGONAL PORTRAIT", "portraitgroup");
-    settings.Add("squarePortrait", false, "SQUARE PORTRAIT", "portraitgroup");
-    settings.Add("diamondPortrait", false, "DIAMOND PORTRAIT", "portraitgroup");
+    settings.Add("ovalPortrait", false, "OVAL PORTRAIT - GRANDPA", "portraitgroup");
+    settings.Add("circlePortrait", false, "CIRCLE PORTRAIT - MAN", "portraitgroup");
+    settings.Add("hexaPortrait", false, "HEXAGONAL PORTRAIT - GRANDMA", "portraitgroup");
+    settings.Add("squarePortrait", false, "SQUARE PORTRAIT - KID", "portraitgroup");
+    settings.Add("diamondPortrait", false, "DIAMOND PORTRAIT - LADY", "portraitgroup");
 
     // -----------------------
     settings.Add("candlegroup", true, "Candles");
@@ -44,21 +48,20 @@ startup {
     // -----------------------
     settings.Add("cameragroup", true, "Camera");
     settings.Add("yourPhotos", false, "YOUR PHOTOS", "cameragroup");
+    settings.SetToolTip("yourPhotos", "The first picture you take");
     settings.Add("camera", false, "INSTANT CAMERA", "cameragroup");
-
 
     // -----------------------
     settings.Add("boxgroup", true, "Boxes");
     settings.Add("sunBox", false, "SUNBOX", "boxgroup");
-    settings.Add("moonBox", false, "MOONBOX", "boxgroup");
+    settings.Add("moonBox_1", false, "MOONBOX - CLOSED", "boxgroup");
     // settings.Add("moonBox", false, "MOONBOX OPENED", "boxgroup"); // TODO
 
 
     // -----------------------
-    /* TODO
     settings.Add("medalliongroup", true, "Medallions");
-    settings.Add("medalion", false, "SOLAR MEDALLION", "medalliongroup"); // TODO
-    */
+    settings.Add("medalion_1", false, "SOLAR MEDALLION - FIRST", "medalliongroup"); // TODO other medalions
+    settings.SetToolTip("medalion_1", "Only the first medallion will trigger the split");
 
     // -----------------------
     settings.Add("tapegroup", true, "Tapes");
@@ -79,7 +82,7 @@ startup {
     settings.Add("hammer", false, "HAMMER", "othergroup");
     settings.Add("brokenShovel", false, "BROKEN SHOVEL", "othergroup"); // ???
     settings.Add("shovel", false, "SHOVEL", "othergroup"); // ???
-    settings.Add("i", false, "\"i\" LETTER", "othergroup"); // i letter for MADiSON
+    settings.Add("i", false, "LETTER \"i\"", "othergroup"); // i letter for MADiSON
     settings.Add("weedingRing", false, "WEDDING RING", "othergroup");
 
     // ----------------------------------------
@@ -103,6 +106,7 @@ startup {
         {"\"STUDY\" KEY", "studyKey"},
 
         {"UNFINISHED CLOCK", "unfinishedClock"},
+        {"TWELVE O´CLOCK", "clock_1"},
 
         {"OVAL PORTRAIT", "ovalPortrait"},
         {"CIRCLE PORTRAIT", "circlePortrait"},
@@ -119,7 +123,9 @@ startup {
         {"INSTANT CAMERA", "camera"},
 
         {"SUNBOX", "sunBox"},
-        {"MOONBOX", "moonBox"},
+        {"MOONBOX", "moonBox_1"},
+
+        {"SOLAR MEDALLION", "medalion_1"},
 
         {"TAPE \"DO NOT LISTEN\"", "tapeBad"},
         {"TAPE #3", "tape3"},
@@ -143,7 +149,7 @@ startup {
 }
 
 init {
-    vars.inventoryBase = 0x015F0BB8;
+    vars.inventoryBase = 0x0159D5E8;
     vars.sceneBase = 0x015CCAD8;
 
     vars.gameBase = modules.Where(m => m.ModuleName == "GameAssembly.dll").First().BaseAddress;
@@ -152,14 +158,14 @@ init {
 
     Func<int> getInventorySize = () => {
 		IntPtr ptr;
-        new DeepPointer(vars.ptrInventoryOffset, 0x5D0, 0x5A8, 0xA0, 0x40, 0x18).DerefOffsets(memory, out ptr);
+        new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x18).DerefOffsets(memory, out ptr);
         return memory.ReadValue<int>(ptr);
 	};
 	vars.getInventorySize = getInventorySize;
 
     Func<int, string> getItem = (index) => {
         IntPtr ptr;
-        new DeepPointer(vars.ptrInventoryOffset, 0x5D0, 0x5A8, 0xA0, 0x40, 0x10, (0x20 + (index * 0x8)), 0x28, 0x14).DerefOffsets(memory, out ptr);
+        new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x10, (0x20 + (index * 0x8)), 0x28, 0x14).DerefOffsets(memory, out ptr);
         return memory.ReadString(ptr, 128);
 	};
 	vars.getItem = getItem;
@@ -170,47 +176,48 @@ init {
         return memory.ReadString(ptr, 128);
 	};
 	vars.getScene = getScene;
+
+    vars.__itemCheck.Clear();
+    old.__inventory_size = 0;
 }
 
 start {
+    if(vars.getScene == null) return false;
     return vars.getScene() == "ChapterOne [Final]";
 }
 
 reset {
-    return !settings["autoskip"] && vars.getScene() == "MainMenu";
+    return settings["reset"] && vars.getScene() == "MainMenu";
 }
 
 update {
-    // RESET VARS
-    if (timer.CurrentPhase != TimerPhase.Running) {
-        vars.__itemCheck.Clear();
-    } else {
+    if (timer.CurrentPhase == TimerPhase.Running) {
         // GET AMOUNT OF ITEMS IN INVENTORY
-        vars.__inventory_size = vars.getInventorySize();
-        if(vars.__inventory_size <= 0 || vars.__inventory_size > vars.maxInventory) return;
+        current.__inventory_size = vars.getInventorySize();
+        if(current.__inventory_size <= 0 || current.__inventory_size > vars.maxInventory) return;
+        if(current.__inventory_size == old.__inventory_size) return;
         // -----------------
 
-        for (int i = 0; i < vars.__inventory_size; ++i) {
+        for (int i = 0; i < current.__inventory_size; ++i) {
             vars.__inventory[i] = vars.getItem(i); // TODO: Grab item ID as well
         }
+    } else {
+        vars.__itemCheck.Clear(); // RESET INVENTORY
     }
 }
 
 split {
     if(timer.CurrentPhase != TimerPhase.Running) return false;
 
-    // Split all times until end
-    if(vars.getScene() == "MainMenu" && settings["autoskip"]) {
-        return true;
-    }
+    if(current.__inventory_size <= 0 || current.__inventory_size > vars.maxInventory) return false;
+    if(current.__inventory_size == old.__inventory_size) return false;
 
-    if(vars.__inventory_size <= 0 || vars.__inventory_size > vars.maxInventory) return false;
-    for (int i = 0; i < vars.__inventory_size; ++i) {
-        string item = vars.__inventory[i];
-        if(vars.__itemCheck.Contains(item) || !vars.__gameItems.ContainsKey(item)) continue; // Already checked
+    for (int i = 0; i < current.__inventory_size; ++i) {
+        string itemName = vars.__inventory[i];
+        if(vars.__itemCheck.Contains(itemName) || !vars.__gameItems.ContainsKey(itemName)) continue; // Already checked
 
-        vars.__itemCheck.Add(item);
-        return settings[vars.__gameItems[item]];
+        vars.__itemCheck.Add(itemName);
+        return settings[vars.__gameItems[itemName]];
     }
 
     return false;
