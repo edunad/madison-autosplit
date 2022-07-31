@@ -173,7 +173,6 @@ init {
 }
 
 start {
-    print("bla");
     return vars.getScene() == "ChapterOne [Final]";
 }
 
