@@ -40,6 +40,6 @@
 
 5. Edit the options on "Advanced" for what items you want the split to trigger
 
-    ![](https://i.rawr.dev/X6266bT3M2.png)
+    ![](https://i.rawr.dev/6AEIB6JFou.png)
 
 -----
