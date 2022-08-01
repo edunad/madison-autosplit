@@ -1,90 +1,88 @@
 /*  MADiSON Autosplitter
-    v0.0.3 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.4 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     CHANGELOG:
-    - Added more items
-    - Fix item pointers
+    - Items on settings are now sorted by appearance
+    - Added Triangular key
+    - Added concrete block
 */
 
 
 state("MADiSON", "v1.1.0") { }
 
 startup {
-    settings.Add("splitgroup", true, "SPLIT SETTINGS");
-    settings.Add("reset", false, "REALLY Enable time reset on mainmenu (sets it to 0:00)", "splitgroup");
-    settings.SetToolTip("reset", "Same as normal reset, but i wanted a default off option.");
 
-    settings.Add("keygroup", true, "Keys");
-    settings.Add("maskKey", false, "\"MASK\" KEY", "keygroup");
-    settings.Add("redKey", false, "\"RED\" KEY", "keygroup");
-    settings.Add("heartKey", false, "\"HEART\" KEY", "keygroup");
-    settings.Add("confessionaryKey", false, "\"CONFESSIONARY\" KEY", "keygroup");
-    settings.Add("jKey", false, "\"J\" KEY", "keygroup");
-    settings.Add("clockKey", false, "\"CLOCKROOM\" KEY", "keygroup");
-    settings.Add("studyKey", false, "\"STUDY\" KEY", "keygroup");
-    // settings.Add("triangularKey", false, 'TRIANGULAR KEY', "keygroup"); // TODO
+    settings.Add("splitgroup", true, "Splits"); // In order of appearance
+    settings.Add("sunBox", false, "Sunbox", "splitgroup");
+    settings.Add("handle", false, "Handle", "splitgroup");
+    settings.Add("hammer", false, "Hammer", "splitgroup");
 
-    // -----------------------
-    settings.Add("clockgroup", true, "Clocks");
-    settings.Add("unfinishedClock", false, "UNFINISHED CLOCK", "clockgroup");
-    settings.Add("clock_1", false, "TWELVE O´CLOCK - FIRST", "clockgroup"); // TODO
-    settings.SetToolTip("clock_1", "Only the first clock will trigger the split");
-
-    // -----------------------
-    settings.Add("portraitgroup", true, "Portraits");
-    settings.Add("ovalPortrait", false, "OVAL PORTRAIT - GRANDPA", "portraitgroup");
-    settings.Add("circlePortrait", false, "CIRCLE PORTRAIT - MAN", "portraitgroup");
-    settings.Add("hexaPortrait", false, "HEXAGONAL PORTRAIT - GRANDMA", "portraitgroup");
-    settings.Add("squarePortrait", false, "SQUARE PORTRAIT - KID", "portraitgroup");
-    settings.Add("diamondPortrait", false, "DIAMOND PORTRAIT - LADY", "portraitgroup");
-
-    // -----------------------
-    settings.Add("candlegroup", true, "Candles");
-    settings.Add("yellowCandle", false, "YELLOW CANDLE", "candlegroup");
-    settings.Add("blueCandle", false, "BLUE CANDLE", "candlegroup");
-    settings.Add("redCandle", false, "RED CANDLE", "candlegroup");
-    settings.Add("greenCandle", false, "GREEN CANDLE", "candlegroup");
-
-    // -----------------------
-    settings.Add("cameragroup", true, "Camera");
-    settings.Add("yourPhotos", false, "YOUR PHOTOS", "cameragroup");
+    settings.Add("camera", false, "Instant Camera", "splitgroup");
+    settings.Add("yourPhotos", false, "Your Photos - FIRST PICTURE", "splitgroup");
     settings.SetToolTip("yourPhotos", "The first picture you take");
-    settings.Add("camera", false, "INSTANT CAMERA", "cameragroup");
 
-    // -----------------------
-    settings.Add("boxgroup", true, "Boxes");
-    settings.Add("sunBox", false, "SUNBOX", "boxgroup");
-    settings.Add("moonBox_1", false, "MOONBOX - CLOSED", "boxgroup");
-    // settings.Add("moonBox", false, "MOONBOX OPENED", "boxgroup"); // TODO
+    settings.Add("studyKey", false, "Study Key", "splitgroup");
+    settings.Add("ovalPortrait", false, "Grandpa Portrait", "splitgroup");
+    settings.Add("rustedNail", false, "Rusted Nail", "splitgroup");
 
+    settings.Add("jKey", false, "J Key - Safe Key", "splitgroup");
+    settings.Add("tape1", false, "Tape #1", "splitgroup");
+    settings.Add("notebook", false, "Luca's Notebook", "splitgroup");
+    settings.Add("triangularKey_1", false, "Triangular Key - FIRST KEY", "splitgroup"); // TODO other TRIANGULAR KEY
+    settings.SetToolTip("triangularKey_1", "[WIP] Only the first triangular key will trigger the split");
 
-    // -----------------------
-    settings.Add("medalliongroup", true, "Medallions");
-    settings.Add("medalion_1", false, "SOLAR MEDALLION - FIRST", "medalliongroup"); // TODO other medalions
-    settings.SetToolTip("medalion_1", "Only the first medallion will trigger the split");
+    settings.Add("medalion_1", false, "Solar Medallion - FIRST MEDALLION", "splitgroup"); // TODO other medalions
+    settings.SetToolTip("medalion_1", "[WIP] Only the first medallion will trigger the split");
 
-    // -----------------------
-    settings.Add("tapegroup", true, "Tapes");
-    settings.Add("tapeBad", false, "TAPE \"DO NOT LISTEN\"", "tapegroup");
-    settings.Add("tape3", false, "TAPE #3", "tapegroup");
-    settings.Add("tape2", false, "TAPE #2", "tapegroup");
-    settings.Add("tape1", false, "TAPE #1", "tapegroup");
+    settings.Add("moonBox_1", false, "Moonbox", "splitgroup");
 
-    // -----------------------
-    settings.Add("othergroup", true, "Other");
-    settings.Add("boltCutter", false, "BOLT CUTTER", "othergroup");
-    settings.Add("rustedNail", false, "RUSTED NAIL", "othergroup");
-    settings.Add("oldSlides", false, "OLD SLIDES", "othergroup");
-    settings.Add("handle", false, "HANDLE", "othergroup");
-    settings.Add("skull", false, "MADISON HALE'S SKULL", "othergroup");
-    settings.Add("crowbar", false, "CROWBAR", "othergroup");
-    settings.Add("notebook", false, "LUCA'S NOTEBOOK", "othergroup");
-    settings.Add("hammer", false, "HAMMER", "othergroup");
-    settings.Add("brokenShovel", false, "BROKEN SHOVEL", "othergroup"); // ???
+    settings.Add("heartKey", false, "Heart Key", "splitgroup");
+
+    settings.Add("diamondPortrait", false, "♦ Diamond Portrait - LADY", "splitgroup");
+    settings.Add("squarePortrait", false, "◼ Square Portrait - KID", "splitgroup");
+
+    settings.Add("oldSlides", false, "Old Slides", "splitgroup");
+    settings.Add("circlePortrait", false, "● Circle Portrait - MAN", "splitgroup");
+    settings.Add("hexaPortrait", false, "⬢ Hexagon Portrait - GRANDMA", "splitgroup");
+    // MEDALION 2 ---
+    // LIGHER --- ?
+
+    settings.Add("yellowCandle", false, "Yellow Candle", "splitgroup");
+    settings.Add("redCandle", false, "Red Candle", "splitgroup");
+    settings.Add("blueCandle", false, "Blue Candle", "splitgroup");
+    settings.Add("greenCandle", false, "Green Candle", "splitgroup");
+
+    settings.Add("confessionaryKey", false, "Confessionary Key", "splitgroup");
+    settings.Add("i", false, "Letter \"i\"", "splitgroup"); // i letter for MADiSON
+    settings.Add("skull", false, "MADiSON Hale's Skull", "splitgroup");
+    settings.Add("redKey", false, "Red Door Key", "splitgroup");
+    settings.Add("crowbar", false, "Crowbar", "splitgroup");
+    settings.Add("weedingRing", false, "Weeding Ring", "splitgroup");
+    // TRIANGULAR KEY 2 ---
+    settings.Add("boltCutter", false, "Bolt Cutter", "splitgroup");
+    // MOON BOX - OPENED --- 2
+    settings.Add("tape3", false, "Tape #3", "splitgroup");
+    // CONCRETE BLOCK
+    settings.Add("concrete_block_1", false, "Concrete Block - TOILET", "splitgroup");
+    settings.SetToolTip("concrete_block_1", "[WIP] Only the first concrete block will trigger the split");
+
+    settings.Add("clockKey", false, "Clock Room Key", "splitgroup");
+
+    settings.Add("clock_1", false, "Clock - GREEN SAFE", "splitgroup"); // TODO
+    settings.SetToolTip("clock_1", "[WIP] Only the first clock will trigger the split");
+
+    settings.Add("unfinishedClock", false, "Unfinished Clock", "splitgroup");
+    settings.Add("maskKey", false, "Johnny's Key - RED SAFE KEY", "splitgroup");
+
+    // Settings
+    settings.Add("settingsgroup", true, "Settings"); // In order of appearance
+    settings.Add("reset_mainmenu", false, "Reset on mainmenu", "settingsgroup");
+
+    // MISSING:
+    /*settings.Add("brokenShovel", false, "BROKEN SHOVEL", "othergroup"); // ???
     settings.Add("shovel", false, "SHOVEL", "othergroup"); // ???
-    settings.Add("i", false, "LETTER \"i\"", "othergroup"); // i letter for MADiSON
-    settings.Add("weedingRing", false, "WEDDING RING", "othergroup");
-
+    settings.Add("tapeBad", false, "TAPE \"DO NOT LISTEN\"", "tapegroup");
+    settings.Add("tape2", false, "TAPE #2", "tapegroup");*/
     // ----------------------------------------
 
     // Game settings
@@ -97,13 +95,16 @@ startup {
     vars.__itemCheck = new List<string>();
 
     vars.__gameItems = new Dictionary<string, string>() {
-        {"\"MASK\" KEY", "maskKey"},
+        {"\"MASK\" KEY", "maskKey"}, // JOHNNY'S KEY
         {"\"RED\" KEY", "redKey"},
         {"\"HEART\" KEY", "heartKey"},
         {"\"CONFESSIONARY\" KEY", "confessionaryKey"},
         {"\"J\" KEY", "jKey"},
         {"\"CLOCK\" KEY", "clockKey"},
         {"\"STUDY\" KEY", "studyKey"},
+        {"TRIANGULAR KEY", "triangularKey_1"},
+
+        {"CONCRETE BLOCK", "concrete_block_1"},
 
         {"UNFINISHED CLOCK", "unfinishedClock"},
         {"TWELVE O´CLOCK", "clock_1"},
@@ -187,7 +188,7 @@ start {
 }
 
 reset {
-    return settings["reset"] && vars.getScene() == "MainMenu";
+    return settings["reset_mainmenu"] && vars.getScene() == "MainMenu";
 }
 
 update {
