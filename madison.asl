@@ -1,10 +1,8 @@
 /*  MADiSON Autosplitter
-    v0.0.4 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.5 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     CHANGELOG:
-    - Items on settings are now sorted by appearance
-    - Added Triangular key
-    - Added concrete block
+    - Fix auto-starting always starting while ingame
 */
 
 
@@ -179,12 +177,14 @@ init {
 	vars.getScene = getScene;
 
     vars.__itemCheck.Clear();
+
     old.__inventory_size = 0;
+    old.__scene = "";
 }
 
 start {
-    if(vars.getScene == null) return false;
-    return vars.getScene() == "ChapterOne [Final]";
+    if(old.__scene == current.__scene) return false;
+    return current.__scene == "ChapterOne [Final]";
 }
 
 reset {
@@ -192,6 +192,7 @@ reset {
 }
 
 update {
+    current.__scene = vars.getScene();
     if (timer.CurrentPhase == TimerPhase.Running) {
         // GET AMOUNT OF ITEMS IN INVENTORY
         current.__inventory_size = vars.getInventorySize();
