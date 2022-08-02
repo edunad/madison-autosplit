@@ -1,8 +1,12 @@
 /*  MADiSON Autosplitter
     v0.0.5 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
+    GAME VERSIONS:
+    - v1.1.0 = 675840
+
     CHANGELOG:
     - Fix auto-starting always starting while ingame
+    - Add game versioning check
 */
 
 
@@ -148,14 +152,27 @@ startup {
 }
 
 init {
-    vars.inventoryBase = 0x0159D5E8;
-    vars.sceneBase = 0x015CCAD8;
+    vars.inventoryBase = 0x00;
+    vars.sceneBase = 0x00;
+
+    switch(modules.First().ModuleMemorySize) {
+        case (675840):
+            vars.inventoryBase = 0x0159D5E8;
+            vars.sceneBase = 0x015CCAD8;
+        break;
+        default:
+            print("[WARNING] Invalid MADiSON game version");
+            print("[WARNING] Could not find inventory & scene pointers");
+        break;
+    }
 
     vars.gameBase = modules.Where(m => m.ModuleName == "GameAssembly.dll").First().BaseAddress;
     vars.ptrInventoryOffset = vars.gameBase + vars.inventoryBase;
     vars.ptrSceneOffset = vars.gameBase + vars.sceneBase;
 
     Func<int> getInventorySize = () => {
+        if(vars.inventoryBase == 0x00) return -1;
+
 		IntPtr ptr;
         new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x18).DerefOffsets(memory, out ptr);
         return memory.ReadValue<int>(ptr);
@@ -163,6 +180,8 @@ init {
 	vars.getInventorySize = getInventorySize;
 
     Func<int, string> getItem = (index) => {
+        if(vars.inventoryBase == 0x00) return "Unknown";
+
         IntPtr ptr;
         new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x10, (0x20 + (index * 0x8)), 0x28, 0x14).DerefOffsets(memory, out ptr);
         return memory.ReadString(ptr, 128);
@@ -170,6 +189,8 @@ init {
 	vars.getItem = getItem;
 
     Func<string> getScene = () => {
+        if(vars.sceneBase == 0x00) return "Unknown";
+
         IntPtr ptr;
         new DeepPointer(vars.ptrSceneOffset, 0x18, 0xB8, 0, 0x50, 0x14).DerefOffsets(memory, out ptr);
         return memory.ReadString(ptr, 128);
@@ -188,10 +209,13 @@ start {
 }
 
 reset {
+    if(vars.getScene == null) return false;
     return settings["reset_mainmenu"] && vars.getScene() == "MainMenu";
 }
 
 update {
+    if(vars.getScene == null || vars.getInventorySize == null || vars.getItem == null) return;
+
     current.__scene = vars.getScene();
     if (timer.CurrentPhase == TimerPhase.Running) {
         // GET AMOUNT OF ITEMS IN INVENTORY
@@ -209,6 +233,7 @@ update {
 }
 
 split {
+    if(vars.getScene == null || vars.getInventorySize == null || vars.getItem == null) return false;
     if(timer.CurrentPhase != TimerPhase.Running) return false;
 
     if(current.__inventory_size <= 0 || current.__inventory_size > vars.maxInventory) return false;
