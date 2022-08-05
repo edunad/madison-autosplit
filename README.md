@@ -1,4 +1,4 @@
-# [WIP] MADiSON AutoSplitter
+# MADiSON AutoSplitter
 
 > **TODO:**
 >    - Support duplicate items like the "EYEBALL", by using id
