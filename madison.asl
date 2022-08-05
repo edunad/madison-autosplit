@@ -1,12 +1,11 @@
 /*  MADiSON Autosplitter
-    v0.0.5 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.6 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     GAME VERSIONS:
     - v1.1.0 = 675840
 
     CHANGELOG:
-    - Fix auto-starting always starting while ingame
-    - Add game versioning check
+    - Remove letter "i", doesn't seem to be detected by inventory
 */
 
 
@@ -55,7 +54,7 @@ startup {
     settings.Add("greenCandle", false, "Green Candle", "splitgroup");
 
     settings.Add("confessionaryKey", false, "Confessionary Key", "splitgroup");
-    settings.Add("i", false, "Letter \"i\"", "splitgroup"); // i letter for MADiSON
+    // settings.Add("i", false, "Letter \"i\"", "splitgroup"); // Not detected on inventory
     settings.Add("skull", false, "MADiSON Hale's Skull", "splitgroup");
     settings.Add("redKey", false, "Red Door Key", "splitgroup");
     settings.Add("crowbar", false, "Crowbar", "splitgroup");
@@ -145,7 +144,7 @@ startup {
         {"HAMMER", "hammer"},
         {"BROKEN SHOVEL", "brokenShovel"}, // ??
         {"SHOVEL", "shovel"}, // ??
-        {"\"i\"", "i"},
+        // {"\"i\"", "i"}, // Not detected on inventory
         {"WEDDING RING", "weedingRing"},
     };
     // ---
