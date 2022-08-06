@@ -154,18 +154,16 @@ init {
     vars.inventoryBase = 0x00;
     vars.sceneBase = 0x00;
 
-    switch(modules.First().ModuleMemorySize) {
-        case (675840):
-            vars.inventoryBase = 0x0159D5E8;
-            vars.sceneBase = 0x015CCAD8;
-        break;
-        default:
-            print("[WARNING] Invalid MADiSON game version");
-            print("[WARNING] Could not find inventory & scene pointers");
-        break;
+    vars.gameAssembly = modules.Where(m => m.ModuleName == "GameAssembly.dll").First();
+    if(vars.gameAssembly.ModuleMemorySize == 27136000) {
+        vars.inventoryBase = 0x0159D5E8;
+        vars.sceneBase = 0x015CCAD8;
+    }else {
+        print("[WARNING] Invalid MADiSON game version");
+        print("[WARNING] Could not find inventory & scene pointers");
     }
 
-    vars.gameBase = modules.Where(m => m.ModuleName == "GameAssembly.dll").First().BaseAddress;
+    vars.gameBase = vars.gameAssembly.BaseAddress;
     vars.ptrInventoryOffset = vars.gameBase + vars.inventoryBase;
     vars.ptrSceneOffset = vars.gameBase + vars.sceneBase;
 
