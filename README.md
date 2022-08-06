@@ -25,6 +25,13 @@
 
 ## INSTRUCTIONS
 
+### AUTO-SPLIT IS NOW AVAILABLE AT LIVESPLIT, SIMPLY ENABLE IT AFTER SELECTING THE GAME
+![](https://i.rawr.dev/vczQ1jLcDL.png)
+
+------------------
+
+### MANUAL
+
 1. Download the latest madison.asl from [releases](https://github.com/edunad/madison-livesplit/releases)
 2. Open Layout Editor on LiveSplit
 
