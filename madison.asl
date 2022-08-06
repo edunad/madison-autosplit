@@ -1,11 +1,11 @@
 /*  MADiSON Autosplitter
-    v0.0.6 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.7 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     GAME VERSIONS:
-    - v1.1.0 = 675840
+    - v1.1.0 = 27136000
 
     CHANGELOG:
-    - Remove letter "i", doesn't seem to be detected by inventory
+    - Fix memory module size
 */
 
 
