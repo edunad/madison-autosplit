@@ -1,11 +1,11 @@
 /*  MADiSON Autosplitter
-    v0.0.8 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
+    v0.0.9 --- By FailCake (edunad) & Hazzytje (Pointer wizard <3)
 
     GAME VERSIONS:
     - v1.1.0 = 27136000
 
     CHANGELOG:
-    - Memory scanning improvements
+    - Improved autostart, now starts after load! :3
 */
 
 
@@ -148,11 +148,15 @@ startup {
 init {
     vars.inventoryBase = 0x00;
     vars.sceneBase = 0x00;
+    vars.loadingBase = 0x00;
 
+    if(modules == null) return;
     vars.gameAssembly = modules.Where(m => m.ModuleName == "GameAssembly.dll").First();
+
     if(vars.gameAssembly.ModuleMemorySize == 27136000) {
         vars.inventoryBase = 0x0159D5E8;
         vars.sceneBase = 0x015CCAD8;
+        vars.loadingBase = 0x015B00D0;
     }else {
         print("[WARNING] Invalid MADiSON game version");
         print("[WARNING] Could not find pointers");
@@ -161,21 +165,23 @@ init {
     vars.gameBase = vars.gameAssembly.BaseAddress;
     vars.ptrInventoryOffset = vars.gameBase + vars.inventoryBase;
     vars.ptrSceneOffset = vars.gameBase + vars.sceneBase;
+    vars.ptrLoadingSceneOffset = vars.gameBase + vars.loadingBase;
 
 	vars.watchers = new MemoryWatcherList();
     vars.watchers.Add(new MemoryWatcher<int>(new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x18)) { Name = "inventorySize" });
-    vars.watchers.Add(new StringWatcher(new DeepPointer(vars.ptrSceneOffset, 0x18, 0xB8, 0, 0x50, 0x14), ReadStringType.AutoDetect, 255) { Name = "scene" });
+    vars.watchers.Add(new StringWatcher(new DeepPointer(vars.ptrSceneOffset, 0x18, 0xB8, 0, 0x50, 0x14), 255) { Name = "scene" });
+    vars.watchers.Add(new MemoryWatcher<float>(new DeepPointer(vars.ptrLoadingSceneOffset, 0x90, 0x88, 0xB8, 0x38, 0x24))  { Name = "loadFadeOut" });
 
     for (int i = 0; i < vars.__maxInventory; ++i)
-        vars.watchers.Add(new StringWatcher(new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x10, (0x20 + (i * 0x8)), 0x28, 0x14), ReadStringType.AutoDetect, 255) { Name = "item_" + i });
+        vars.watchers.Add(new StringWatcher(new DeepPointer(vars.ptrInventoryOffset, 0x490, 0x438, 0x738, 0x18, 0x40, 0x10, (0x20 + (i * 0x8)), 0x28, 0x14), 255) { Name = "item_" + i });
 
     vars.__itemCheck.Clear();
 }
 
 start {
     if(vars.watchers == null) return false;
-    if(vars.watchers["scene"].Current == vars.watchers["scene"].Old) return false;
-    return vars.watchers["scene"].Current == "ChapterOne [Final]";
+    if(vars.watchers["scene"].Current == "MainMenu") return false;
+    return vars.watchers["loadFadeOut"].Current == 0 && vars.watchers["loadFadeOut"].Old == 0.5f;
 }
 
 reset {
