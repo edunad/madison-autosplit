@@ -1,4 +1,5 @@
 # MADiSON AutoSplitter
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/P5P21MQ2K)
 
 > **TODO:**
 >    - Support duplicate items like the "EYEBALL", by using id
